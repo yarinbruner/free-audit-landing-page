@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Free Ad Campaign Audit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #ffffff;
+    --surface: #f5faf8;
+    --surface-2: #edf7f1;
+    --border: rgba(8,32,26,0.08);
+    --border-strong: rgba(8,32,26,0.14);
+    --text: #0b1f1a;
+    --text-muted: #5c6d67;
+    --text-dim: #9aaba5;
+    --accent: #00d98c;
+    --accent-2: #00b377;
+    --accent-soft: #d9fbec;
+    --accent-text: #052e22;
+    --radius-lg: 24px;
+    --radius-md: 16px;
+    --radius-pill: 999px;
+    --shadow-sm: 0 2px 10px rgba(8,32,26,.05);
+    --shadow-md: 0 12px 32px rgba(8,32,26,.08);
+    --shadow-glow: 0 10px 30px rgba(0,217,140,.35);
+  }
+
+  *{ margin:0; padding:0; box-sizing:border-box; }
+
+  html{ scroll-behavior: smooth; }
+
+  body{
+    background: var(--bg);
+    background-image: radial-gradient(circle at 1px 1px, rgba(8,32,26,0.055) 1px, transparent 0);
+    background-size: 26px 26px;
+    color: var(--text);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap{
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px;
+    position: relative;
+  }
+
+  /* ===== FADE-IN ANIMATION ===== */
+  .fade-in{
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity .7s cubic-bezier(.21,.5,.2,1), transform .7s cubic-bezier(.21,.5,.2,1);
+  }
+  .fade-in.visible{ opacity: 1; transform: translateY(0); }
+  .grid-3 .card:nth-child(1){ transition-delay: 0s; }
+  .grid-3 .card:nth-child(2){ transition-delay: .08s; }
+  .grid-3 .card:nth-child(3){ transition-delay: .16s; }
+  .who-list .who-item:nth-child(1){ transition-delay: 0s; }
+  .who-list .who-item:nth-child(2){ transition-delay: .08s; }
+  .who-list .who-item:nth-child(3){ transition-delay: .16s; }
+
+  /* ===== NAV ===== */
+  nav{
+    position: sticky;
+    top: 16px;
+    z-index: 50;
+    display: flex;
+    justify-content: center;
+    padding: 0 24px;
+    margin-bottom: 24px;
+  }
+  .nav-pill{
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(255,255,255,0.7);
+    backdrop-filter: blur(14px);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-pill);
+    padding: 12px 12px 12px 24px;
+    box-shadow: var(--shadow-sm);
+  }
+  .logo{
+    display:flex; align-items:center; gap:10px;
+    font-weight: 700; font-size: 16px; letter-spacing: -0.01em;
+  }
+  .logo-mark{
+    width: 28px; height: 28px; border-radius: 8px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    display:flex; align-items:center; justify-content:center;
+    color: var(--accent-text); font-weight:800; font-size: 14px;
+  }
+  .nav-cta{
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    color: var(--accent-text);
+    font-weight: 700;
+    font-size: 14px;
+    border: none;
+    border-radius: var(--radius-pill);
+    padding: 12px 22px;
+    cursor: pointer;
+    transition: transform .2s ease, box-shadow .2s ease;
+    text-decoration:none;
+    display:inline-block;
+    box-shadow: 0 4px 14px rgba(0,217,140,.3);
+  }
+  .nav-cta:hover{ transform: translateY(-1px); box-shadow: 0 6px 20px rgba(0,217,140,.42); }
+
+  /* ===== HERO ===== */
+  .hero{
+    padding: 110px 0 100px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero .blob{
+    position:absolute;
+    border-radius: 50%;
+    filter: blur(70px);
+    z-index: -1;
+    pointer-events: none;
+  }
+  .hero .blob-1{
+    width: 520px; height: 520px;
+    top: -220px; right: -160px;
+    background: radial-gradient(circle, var(--accent) 0%, transparent 70%);
+    opacity: .35;
+  }
+  .hero .blob-2{
+    width: 420px; height: 420px;
+    bottom: -180px; left: -140px;
+    background: radial-gradient(circle, var(--accent-2) 0%, transparent 70%);
+    opacity: .25;
+  }
+  .badge{
+    display:inline-flex; align-items:center; gap:8px;
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-pill);
+    padding: 6px 16px 6px 8px;
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 28px;
+    box-shadow: var(--shadow-sm);
+  }
+  .badge .pill{
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    color: var(--accent-text);
+    font-weight: 700;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    border-radius: var(--radius-pill);
+    padding: 4px 10px;
+  }
+  h1{
+    font-size: 64px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.08;
+    max-width: 820px;
+    margin: 0 auto 24px;
+  }
+  .grad-text{
+    background: linear-gradient(135deg, var(--accent-2), var(--accent));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .hero p.sub{
+    font-size: 19px;
+    color: var(--text-muted);
+    max-width: 600px;
+    margin: 0 auto 40px;
+  }
+  .hero-ctas{
+    display:flex; gap:14px; justify-content:center; flex-wrap: wrap;
+  }
+  .btn-primary{
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    color: var(--accent-text);
+    font-weight: 700;
+    font-size: 16px;
+    border: none;
+    border-radius: var(--radius-pill);
+    padding: 16px 32px;
+    cursor: pointer;
+    text-decoration:none;
+    display:inline-flex;
+    align-items:center;
+    gap: 8px;
+    box-shadow: var(--shadow-glow);
+    transition: transform .2s ease, box-shadow .2s ease;
+  }
+  .btn-primary .arrow{ transition: transform .2s ease; }
+  .btn-primary:hover{ transform: translateY(-2px) scale(1.02); box-shadow: 0 14px 36px rgba(0,217,140,.48); }
+  .btn-primary:hover .arrow{ transform: translateX(4px); }
+  .btn-secondary{
+    background: #ffffff;
+    color: var(--text);
+    font-weight: 600;
+    font-size: 16px;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-pill);
+    padding: 16px 32px;
+    cursor: pointer;
+    text-decoration:none;
+    display:inline-block;
+    transition: border-color .2s ease, transform .2s ease, box-shadow .2s ease;
+  }
+  .btn-secondary:hover{ border-color: var(--accent-2); box-shadow: var(--shadow-sm); transform: translateY(-1px); }
+
+  /* ===== SECTION GENERIC ===== */
+  section{ padding: 80px 0; }
+  .eyebrow{
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent-2);
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    margin-bottom: 16px;
+  }
+  h2{
+    font-size: 38px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: 16px;
+    max-width: 600px;
+  }
+  .section-sub{
+    color: var(--text-muted);
+    font-size: 17px;
+    max-width: 620px;
+    margin-bottom: 40px;
+  }
+
+  /* ===== OFFER ===== */
+  .offer-box{
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 48px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .offer-box::before{
+    content:'';
+    position:absolute;
+    top:0; left:0; right:0; height:4px;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  }
+  .offer-box p{
+    font-size: 20px;
+    color: var(--text);
+    max-width: 680px;
+    margin: 0 auto 16px;
+    line-height: 1.6;
+  }
+  .offer-box p:last-child{ margin-bottom: 0; color: var(--text-dim); font-size: 15px; }
+
+  /* ===== CARDS GRID ===== */
+  .grid-3{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  .card{
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 32px;
+    transition: border-color .2s ease, transform .2s ease, box-shadow .2s ease;
+  }
+  .card:hover{ border-color: var(--accent-2); transform: translateY(-4px); box-shadow: var(--shadow-md); }
+  .card-icon{
+    width: 44px; height: 44px;
+    background: var(--accent-soft);
+    border: 1px solid var(--border-strong);
+    border-radius: 12px;
+    display:flex; align-items:center; justify-content:center;
+    margin-bottom: 20px;
+    font-size: 20px;
+    transition: transform .2s ease;
+  }
+  .card:hover .card-icon{ transform: scale(1.08) rotate(-4deg); }
+  .card h3{
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    letter-spacing: -0.01em;
+  }
+  .card p{
+    color: var(--text-muted);
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  /* ===== WHO THIS IS FOR ===== */
+  .who-list{
+    display:flex; flex-direction:column; gap: 14px;
+  }
+  .who-item{
+    display:flex; align-items:flex-start; gap:16px;
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 22px 26px;
+    transition: border-color .2s ease, transform .2s ease, box-shadow .2s ease;
+  }
+  .who-item:hover{ border-color: var(--accent-2); transform: translateX(4px); box-shadow: var(--shadow-sm); }
+  .who-item .check{
+    width: 28px; height: 28px; flex-shrink:0;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    color: var(--accent-text);
+    border-radius: 50%;
+    display:flex; align-items:center; justify-content:center;
+    font-weight: 800; font-size: 14px;
+  }
+  .who-item p{ font-size: 16px; color: var(--text); padding-top: 2px;}
+  .who-item strong{ color: var(--text); }
+
+  /* ===== ABOUT ===== */
+  .about-box{
+    display:flex; align-items:center; gap: 32px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 40px;
+  }
+  .about-avatar{
+    width: 84px; height: 84px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    flex-shrink: 0;
+    display:flex; align-items:center; justify-content:center;
+    font-weight: 800; font-size: 28px; color: var(--accent-text);
+    box-shadow: var(--shadow-glow);
+  }
+  .about-box h3{ font-size: 20px; font-weight: 800; margin-bottom: 8px; letter-spacing:-0.01em;}
+  .about-box p{ color: var(--text-muted); font-size: 16px; line-height: 1.6; max-width: 560px; }
+
+  /* ===== FORM ===== */
+  .form-section{
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 56px;
+    box-shadow: var(--shadow-md);
+  }
+  .form-grid{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    margin-bottom: 18px;
+  }
+  .field{ display:flex; flex-direction:column; gap:8px; }
+  .field.full{ grid-column: 1 / -1; }
+  label{ font-size: 13px; font-weight: 600; color: var(--text-muted); }
+  input, select, textarea{
+    background: var(--surface-2);
+    border: 1px solid var(--border-strong);
+    border-radius: 10px;
+    padding: 14px 16px;
+    color: var(--text);
+    font-size: 15px;
+    font-family: inherit;
+    outline: none;
+    transition: border-color .15s ease, box-shadow .15s ease;
+  }
+  input:focus, select:focus, textarea:focus{ border-color: var(--accent-2); box-shadow: 0 0 0 4px rgba(0,217,140,.15); }
+  input::placeholder, textarea::placeholder{ color: var(--text-dim); }
+  textarea{ resize: vertical; min-height: 90px; }
+  .submit-row{
+    display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px; margin-top: 12px;
+  }
+  .submit-row .btn-primary{ width: auto; }
+  .form-note{ color: var(--text-dim); font-size: 13px; }
+
+  /* ===== FOOTER ===== */
+  footer{
+    border-top: 1px solid var(--border);
+    padding: 48px 0;
+    text-align: center;
+    color: var(--text-dim);
+    font-size: 14px;
+  }
+  footer a{ color: var(--text-muted); text-decoration: none; }
+  footer a:hover{ color: var(--accent-2); }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 860px){
+    h1{ font-size: 40px; }
+    h2{ font-size: 28px; }
+    .grid-3{ grid-template-columns: 1fr; }
+    .form-grid{ grid-template-columns: 1fr; }
+    .about-box{ flex-direction: column; text-align:center; }
+    .offer-box{ padding: 32px 24px; }
+    .form-section{ padding: 32px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-pill">
+    <div class="logo">
+      <div class="logo-mark">Y</div>
+      Yarin Bruner
+    </div>
+    <a href="#audit-form" class="nav-cta">Get My Free Audit</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+ <div class="wrap">
+  <div class="badge">
+    <span class="pill">Free</span>
+    15-min account review
+  </div>
+  <h1>Your Ad Budget Is <span class="grad-text">Leaking</span>. Find Out Where, Free.</h1>
+  <p class="sub">Get a free 15-minute audit of your platform campaigns. We'll see what works, what drains your budget, and where you can grow. Together, we'll build a higher-performing account.</p>
+  <div class="hero-ctas">
+    <a href="#audit-form" class="btn-primary">Get My Free Audit <span class="arrow">→</span></a>
+    <a href="#what-you-get" class="btn-secondary">See what's included</a>
+  </div>
+ </div>
+</header>
+
+<section>
+ <div class="wrap">
+  <div class="offer-box fade-in">
+    <p>If you're spending money on ads but can't tell what's actually driving results, I'll record a free 15-minute video walkthrough of your account, campaigns, and landing page — and point out exactly what's working, what's wasting budget, and what I'd change.</p>
+    <p>No pitch, no obligation. Just a second pair of eyes from someone who lives in ad accounts.</p>
+  </div>
+ </div>
+</section>
+
+<section id="what-you-get">
+ <div class="wrap">
+  <div class="eyebrow fade-in">What's included</div>
+  <h2 class="fade-in">What you'll get</h2>
+  <p class="section-sub fade-in">A practical, specific breakdown — not a generic checklist.</p>
+  <div class="grid-3">
+    <div class="card fade-in">
+      <div class="card-icon">🎥</div>
+      <h3>A personalized video review</h3>
+      <p>I'll record a screen-share walkthrough of your ad account setup, targeting, and creative — so you can see exactly what I'm seeing.</p>
+    </div>
+    <div class="card fade-in">
+      <div class="card-icon">📊</div>
+      <h3>Tracking & conversion check</h3>
+      <p>Most accounts have gaps here, and it's the first thing that needs to be right before anything else matters.</p>
+    </div>
+    <div class="card fade-in">
+      <div class="card-icon">✅</div>
+      <h3>2–3 actionable fixes</h3>
+      <p>Specific recommendations you can implement right away — with or without working together further.</p>
+    </div>
+  </div>
+ </div>
+</section>
+
+<section>
+ <div class="wrap">
+  <div class="eyebrow fade-in">Who this is for</div>
+  <h2 class="fade-in">Built for early-stage B2B SaaS</h2>
+  <p class="section-sub fade-in">Companies around $500K–2M ARR who fall into one of these:</p>
+  <div class="who-list">
+    <div class="who-item fade-in">
+      <div class="check">✓</div>
+      <p><strong>Running paid ads</strong> but not sure if the spend is actually working</p>
+    </div>
+    <div class="who-item fade-in">
+      <div class="check">✓</div>
+      <p><strong>About to launch paid ads</strong> for the first time and want a sanity check before spending</p>
+    </div>
+    <div class="who-item fade-in">
+      <div class="check">✓</div>
+      <p><strong>A founder running ads solo</strong>, with no dedicated paid media support</p>
+    </div>
+  </div>
+ </div>
+</section>
+
+<section>
+ <div class="wrap">
+  <div class="about-box fade-in">
+    <div class="about-avatar">Y</div>
+    <div>
+      <h3>About Yarin</h3>
+      <p>I help early stage B2B SaaS teams launch ad campaigns that actually work. Clean tracking, sharp creative, and fast iteration that turn ad spend into real pipeline.</p>
+    </div>
+  </div>
+ </div>
+</section>
+
+<section id="audit-form">
+ <div class="wrap">
+  <div class="eyebrow fade-in">Get started</div>
+  <h2 class="fade-in">Request your free audit</h2>
+  <p class="section-sub fade-in">Takes 2 minutes. I'll send your audit video within 2–3 business days.</p>
+  <div class="form-section fade-in">
+    <form onsubmit="event.preventDefault(); document.getElementById('form-success').style.display='block'; this.style.display='none';">
+      <div class="form-grid">
+        <div class="field">
+          <label for="name">Name</label>
+          <input type="text" id="name" placeholder="Jane Smith" required>
+        </div>
+        <div class="field">
+          <label for="email">Email</label>
+          <input type="email" id="email" placeholder="jane@company.com" required>
+        </div>
+        <div class="field">
+          <label for="company">Company name</label>
+          <input type="text" id="company" placeholder="Acme SaaS">
+        </div>
+        <div class="field">
+          <label for="website">Company website</label>
+          <input type="text" id="website" placeholder="acme.com">
+        </div>
+        <div class="field full">
+          <label for="platform">What platform(s) are you running ads on?</label>
+          <select id="platform">
+            <option>Google</option>
+            <option>Meta</option>
+            <option>LinkedIn</option>
+            <option>Not running ads yet</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="field full">
+          <label for="question">What's your biggest question about your ads right now? (optional)</label>
+          <textarea id="question" placeholder="e.g. We're not sure our conversion tracking is set up correctly..."></textarea>
+        </div>
+      </div>
+      <div class="submit-row">
+        <button type="submit" class="btn-primary">Get My Free Audit <span class="arrow">→</span></button>
+        <span class="form-note">No spam. No pitch. Just the audit.</span>
+      </div>
+    </form>
+    <div id="form-success" style="display:none; text-align:center; padding: 24px 0;">
+      <h3 style="font-size:22px; margin-bottom:8px;">Thanks — got it 🎉</h3>
+      <p style="color:var(--text-muted);">I'll record your audit video and send it to your email within 2–3 business days. In the meantime, feel free to connect with me on LinkedIn.</p>
+    </div>
+  </div>
+ </div>
+</section>
+
+<footer>
+ <div class="wrap">
+  <p>© 2026 Yarin Bruner · <a href="#">LinkedIn</a></p>
+ </div>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) entry.target.classList.add('visible');
+    });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.fade-in').forEach((el) => observer.observe(el));
+</script>
+
+</body>
+</html>
